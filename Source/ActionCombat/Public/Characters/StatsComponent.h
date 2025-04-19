@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Characters/EStat.h"
 #include "StatsComponent.generated.h"
+
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -16,6 +18,9 @@ public:
 	// Sets default values for this component's properties
 	UStatsComponent();
 
+	UPROPERTY(EditAnywhere)
+	TMap<TEnumAsByte<EStat>, float> Stats;
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
