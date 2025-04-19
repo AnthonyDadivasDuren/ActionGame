@@ -11,6 +11,7 @@ UINTERFACE(MinimalAPI)
 class UMainPlayer : public UInterface
 {
 	GENERATED_BODY()
+	
 };
 
 /**

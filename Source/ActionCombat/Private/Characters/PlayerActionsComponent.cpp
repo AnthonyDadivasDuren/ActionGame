@@ -2,6 +2,9 @@
 
 
 #include "Characters/PlayerActionsComponent.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Interfaces/MainPlayer.h"
 
 // Sets default values for this component's properties
 UPlayerActionsComponent::UPlayerActionsComponent()
@@ -19,7 +22,12 @@ void UPlayerActionsComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	CharacterRef = GetOwner<ACharacter>();
+	MovementComp = CharacterRef->GetCharacterMovement();
+	
+	if (CharacterRef->Implements<UMainPlayer>()) { return; }
+
+	IPlayerRef = Cast<IMainPlayer>(CharacterRef);
 	
 }
 
@@ -30,5 +38,36 @@ void UPlayerActionsComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UPlayerActionsComponent::Sprint()
+{
+      if (IPlayerRef == nullptr)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("IPlayerRef is invalid!"));
+            return;
+        }
+
+	// Log the stamina check result
+	bool bHasEnoughStamina = IPlayerRef->HasEnoughStamina(SprintCost);
+	UE_LOG(LogTemp, Warning, TEXT("Stamina check result: %d"), bHasEnoughStamina);
+
+	if (!bHasEnoughStamina) { return; }
+
+	if (MovementComp == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MovementComp is invalid!"));
+		return;
+	}
+
+	//If not enough stamina return
+	//if (!IPlayerRef->HasEnoughStamina(SprintCost)) { return; }
+
+	MovementComp->MaxWalkSpeed = SprintSpeed;
+}
+
+void UPlayerActionsComponent::Walk()
+{
+	MovementComp->MaxWalkSpeed = WalkSpeed;
 }
 

@@ -3,6 +3,7 @@
 
 #include "Characters/StatsComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Characters/EStats.h"
 
 // Sets default values for this component's properties
 UStatsComponent::UStatsComponent()
@@ -30,6 +31,7 @@ void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	// ...
 }
 
+
 void UStatsComponent::ReduceHealth(float Amount)
 {
 	if (Stats[EStat::Health] <= 0) { return; }
@@ -55,4 +57,5 @@ void UStatsComponent::ReduceStamina(float Amount)
 	);
 	
 }
+
 

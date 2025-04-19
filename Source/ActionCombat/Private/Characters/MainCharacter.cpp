@@ -4,7 +4,7 @@
 #include "Characters/MainCharacter.h"
 #include "Animations/PlayerAnimInstance.h"
 #include "Characters/StatsComponent.h"
-#include "Characters/EStat.h"
+#include "Characters/EStats.h"
 #include "Combat/LockOnComponent.h"
 #include "Combat/CombatComponent.h"
 #include "Combat/TraceComponent.h"
