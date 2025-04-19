@@ -32,7 +32,7 @@ private:
 	class UCharacterMovementComponent* MovementComp;
 	// Reference to the character's spring arm (camera boom)
 	class USpringArmComponent* SpringArmComp;
-	
+
 public:	
 	// Sets default values for this component's properties
 	ULockOnComponent();
@@ -50,18 +50,21 @@ protected:
 
 	// Initiates lock-on to a nearby target
 	UFUNCTION(BlueprintCallable)
-	void StartLockOn(float Radius = 750.0f);
+	void StartLockOn(float Radius = 1250.0f);
 
 	// Ends the current lock-on
 	void EndLockOn();
 
 	// Toggles between starting and ending lock-on
 	UFUNCTION(BlueprintCallable)
-	void ToggleLockOn(float Radius = 750.0f);
+	void ToggleLockOn(float Radius = 1000.0f);
 
 	//  lock-on max distance which is automatically broken when exceeded
 	UPROPERTY(EditAnywhere)
 	double BreakDistance { 1000.0 };
+
+
+
 
 public:	
 	// Called every frame
