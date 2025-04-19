@@ -18,8 +18,25 @@ class ACTIONCOMBAT_API AMainCharacter : public ACharacter, public IMainPlayer, p
 public:
 	// Sets default values for this character's properties
 	AMainCharacter();
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UStatsComponent* StatsComp;
 	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class ULockOnComponent* LockOnComp;
 	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UCombatComponent* CombatComp;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UTraceComponent* TraceComp;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UBlockComponent* BlockComp;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UPlayerActionsComponent* PlayerActionsComp;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
