@@ -67,6 +67,8 @@ void UPlayerActionsComponent::Sprint()
 	if (!IPlayerRef->HasEnoughStamina(SprintCost)) { return; }
 
 	MovementComp->MaxWalkSpeed = SprintSpeed;
+
+	OnSprintDelegate.Broadcast(SprintCost);
 }
 
 void UPlayerActionsComponent::Walk()
