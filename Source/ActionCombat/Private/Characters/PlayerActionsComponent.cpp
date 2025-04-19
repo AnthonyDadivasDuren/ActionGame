@@ -6,6 +6,12 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interfaces/MainPlayer.h"
 
+
+/*
+ *	Implementation of player movement states and actions
+ */
+
+
 // Sets default values for this component's properties
 UPlayerActionsComponent::UPlayerActionsComponent()
 {
@@ -22,9 +28,11 @@ void UPlayerActionsComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Get references to required components and interfaces
 	CharacterRef = GetOwner<ACharacter>();
 	MovementComp = CharacterRef->GetCharacterMovement();
-	
+
+	// Ensure owner implements the player interface
 	if (!CharacterRef->Implements<UMainPlayer>()) { return; }
 
 	IPlayerRef = Cast<IMainPlayer>(CharacterRef);
@@ -63,22 +71,26 @@ void UPlayerActionsComponent::Sprint()
 	*/
 	
 
-	//If not enough stamina return
+	// Check if player has enough stamina to sprint
 	if (!IPlayerRef->HasEnoughStamina(SprintCost))
 	{
+		// If not enough stamina, return to walking
 		Walk();
 		return;
 	}
 
+	// Don't sprint if character isn't moving
 	if (MovementComp->Velocity.Equals(FVector::ZeroVector, 1)) { return; }
 
+	// Set character movement speed to sprint speed
 	MovementComp->MaxWalkSpeed = SprintSpeed;
-
+	// Broadcast sprint event with stamina cost
 	OnSprintDelegate.Broadcast(SprintCost);
 }
 
 void UPlayerActionsComponent::Walk()
 {
+	// Set character movement speed to walk speed
 	MovementComp->MaxWalkSpeed = WalkSpeed;
 }
 

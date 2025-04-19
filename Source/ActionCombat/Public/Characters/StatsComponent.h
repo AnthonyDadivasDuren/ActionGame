@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -7,48 +6,57 @@
 #include "Characters/EStat.h"
 #include "StatsComponent.generated.h"
 
+/*
+ *  - Manages character statistics and resources (health, stamina, etc.)
+ *
+ */
 
-
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ACTIONCOMBAT_API UStatsComponent : public UActorComponent
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
-	double StaminaRegenRate{ 10.0 };
+    // Rate at which stamina regenerates (units per second)
+    UPROPERTY(EditAnywhere)
+    double StaminaRegenRate{ 10.0 };
 
-	UPROPERTY(VisibleAnywhere)
-	bool bCanRegen{ true };
+    // Flag indicating if stamina regeneration is currently allowed
+    UPROPERTY(VisibleAnywhere)
+    bool bCanRegen{ true };
 
-	UPROPERTY(EditAnywhere)
-	float StaminaDelayDuration{ 2.0f };
+    // Time to wait after stamina use before regeneration begins
+    UPROPERTY(EditAnywhere)
+    float StaminaDelayDuration{ 2.0f };
 
-public:	
-	// Sets default values for this component's properties
-	UStatsComponent();
+public:    
+    // Constructor - sets default component properties
+    UStatsComponent();
 
-	
-	//TMap<TEnumAsByte<EStat>, float> Stats;
-	UPROPERTY(EditAnywhere)
-	TMap<EStat, float> Stats;
-	
+    // Map containing all character statistics and their current values
+    UPROPERTY(EditAnywhere)
+    TMap<EStat, float> Stats;
+    
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+    // Initialization when game starts
+    virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+public:    
+    // Update function called every frame
+    virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UFUNCTION(BlueprintCallable)
-	void ReduceHealth(float Amount);
+    // Reduces character's health by the specified amount
+    UFUNCTION(BlueprintCallable)
+    void ReduceHealth(float Amount);
 
-	UFUNCTION(BlueprintCallable)
-	void ReduceStamina(float Amount);
-	
-	UFUNCTION(BlueprintCallable)
-	void RegenStamina();
+    // Reduces character's stamina and triggers regeneration delay
+    UFUNCTION(BlueprintCallable)
+    void ReduceStamina(float Amount);
+    
+    // Handles gradual stamina regeneration
+    UFUNCTION(BlueprintCallable)
+    void RegenStamina();
 
-	UFUNCTION()
-	void EnableRegen();
+    // Enables stamina regeneration after delay period
+    UFUNCTION()
+    void EnableRegen();
 };
