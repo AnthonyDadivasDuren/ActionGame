@@ -38,6 +38,7 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UCombatComponent::ComboAttack()
 {
 	if (!bCanAttack) { return; }
+	
 
 	bCanAttack = false;
 	
@@ -53,7 +54,7 @@ void UCombatComponent::ComboAttack()
 		(MaxCombo - 1)
 		);
 	
-	
+	OnAttackPerformedDelegate.Broadcast(StaminaCost);
 }
 
 void UCombatComponent::HandleResetAttack()
