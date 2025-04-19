@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "Characters/StatsComponent.h"
 #include "Characters/BossCharacter.h"
+#include "Characters/StatsComponent.h"
+
 
 
 // Sets default values
