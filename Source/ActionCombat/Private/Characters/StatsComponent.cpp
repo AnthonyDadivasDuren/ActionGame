@@ -3,7 +3,7 @@
 
 #include "Characters/StatsComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Characters/EStats.h"
+#include "Characters/EStat.h"
 
 // Sets default values for this component's properties
 UStatsComponent::UStatsComponent()
@@ -48,6 +48,7 @@ void UStatsComponent::ReduceHealth(float Amount)
 
 void UStatsComponent::ReduceStamina(float Amount)
 {
+	
 	Stats[EStat::Stamina] -= Amount;
 
 	Stats[EStat::Stamina] = UKismetMathLibrary::FClamp( 

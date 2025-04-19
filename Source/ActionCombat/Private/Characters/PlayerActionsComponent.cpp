@@ -25,7 +25,7 @@ void UPlayerActionsComponent::BeginPlay()
 	CharacterRef = GetOwner<ACharacter>();
 	MovementComp = CharacterRef->GetCharacterMovement();
 	
-	if (CharacterRef->Implements<UMainPlayer>()) { return; }
+	if (!CharacterRef->Implements<UMainPlayer>()) { return; }
 
 	IPlayerRef = Cast<IMainPlayer>(CharacterRef);
 	
@@ -42,6 +42,7 @@ void UPlayerActionsComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UPlayerActionsComponent::Sprint()
 {
+      /*
       if (IPlayerRef == nullptr)
         {
             UE_LOG(LogTemp, Warning, TEXT("IPlayerRef is invalid!"));
@@ -59,9 +60,11 @@ void UPlayerActionsComponent::Sprint()
 		UE_LOG(LogTemp, Warning, TEXT("MovementComp is invalid!"));
 		return;
 	}
+	*/
+	
 
 	//If not enough stamina return
-	//if (!IPlayerRef->HasEnoughStamina(SprintCost)) { return; }
+	if (!IPlayerRef->HasEnoughStamina(SprintCost)) { return; }
 
 	MovementComp->MaxWalkSpeed = SprintSpeed;
 }
