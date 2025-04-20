@@ -5,6 +5,8 @@
 #include "AIController.h"
 #include  "GameFramework/Character.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Characters/EEnemyState.h"
 
 /*
 * Executes the ranged attack behavior tree task
@@ -31,8 +33,13 @@ EBTNodeResult::Type UBTT_RangeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	if (RandomValue > Threshold)
 	{
 		Threshold = 0.9;
-		UE_LOG(LogTemp, Warning, TEXT("Charging at the Player!"))
-		
+		//UE_LOG(LogTemp, Warning, TEXT("Charging at the Player!"))
+
+		OwnerComp.GetBlackboardComponent()
+			->SetValueAsEnum(
+				TEXT("CurrentState"),
+				EEnemyState::Charge
+				);
 	}
 	else
 	{
