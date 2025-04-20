@@ -2,7 +2,7 @@
 
 
 #include "Combat/EnemyProjectileComponent.h"
-
+#include "Kismet/KismetMathLibrary.h"
 /**
  * 
  *	Component that handles projectile spawning functionality for enemy actors
@@ -46,11 +46,25 @@ void UEnemyProjectileComponent::SpawnProjectile(FName ComponentName, TSubclassOf
 		Cast<USceneComponent>(GetOwner()->GetDefaultSubobjectByName(ComponentName)
 			)
 		};
-
+	
 	// Get the world location where we want to spawn the projectile
 	FVector SpawnLocation{ SpawnPointComp->GetComponentLocation() };
 
+	//Get The Player location
+	FVector PlayerLocation { GetWorld()->GetFirstPlayerController()
+	->GetPawn()->GetActorLocation()
+	};
+
+	// Calculate rotation Toward the player
+	FRotator SpawnRotation{
+		UKismetMathLibrary::FindLookAtRotation(
+	SpawnLocation, PlayerLocation	
+		)
+	};
+
 	// Spawn the projectile at the specified location
-	GetWorld()->SpawnActor(ProjectileClass, &SpawnLocation);
+	GetWorld()->SpawnActor(ProjectileClass,
+		&SpawnLocation,
+		&SpawnRotation);
 }
 
