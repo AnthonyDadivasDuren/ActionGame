@@ -4,6 +4,7 @@
 #include "Characters/AI/BTT_RangeAttack.h"
 #include "AIController.h"
 #include  "GameFramework/Character.h"
+#include "Kismet/KismetMathLibrary.h"
 
 /*
 * Executes the ranged attack behavior tree task
@@ -24,6 +25,19 @@ EBTNodeResult::Type UBTT_RangeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	// Play the attack animation montage
 
 	CharacterRef->PlayAnimMontage(AnimMontage);
+
+	double RandomValue { UKismetMathLibrary::RandomFloat() };
+
+	if (RandomValue > Threshold)
+	{
+		Threshold = 0.9;
+		UE_LOG(LogTemp, Warning, TEXT("Charging at the Player!"))
+		
+	}
+	else
+	{
+		Threshold -= 0.1;
+	}
 	
 	return EBTNodeResult::Succeeded;
 	
