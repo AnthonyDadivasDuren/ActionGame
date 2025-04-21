@@ -30,6 +30,11 @@ private:
     // Handles the event when the charge movement is complete or interrupted
     FScriptDelegate MoveCompleteDelegate;
 
+    float OriginalWalkSpeed;
+
+    UPROPERTY(EditAnywhere)
+    float ChargeWalkSpeed { 2000.0f };
+
 protected:
     // Updates the charge attack state each frame, checking if conditions are met to begin charging
     virtual void TickTask(
