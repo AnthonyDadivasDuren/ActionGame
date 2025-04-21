@@ -14,11 +14,12 @@ class ACTIONCOMBAT_API ABossCharacter : public ACharacter, public IEnemy, public
 {
 	GENERATED_BODY()
 
+private:
+	
 	UPROPERTY(EditAnywhere)
 	TEnumAsByte<EEnemyState> InitialState;
 
 	class UBlackboardComponent* BlackboardComp;
-
 
 public:
 	// Sets default values for this character's properties
@@ -26,6 +27,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UStatsComponent* StatsComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UCombatComponent* CombatComp;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,6 +47,8 @@ public:
 	void DetectPawn(APawn* DetectedPawn, APawn* PawnToDetect);
 
 	virtual float GetDamage() override;
+
+	virtual void Attack() override;
 	
 
 };

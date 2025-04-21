@@ -4,8 +4,10 @@
 #include "Characters/AI/BTT_MeleeAttack.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"
-#include "GameFramework/DefaultPawn.h"
+#include "Interfaces/Fighter.h"
+#include "GameFramework/Character.h"
 #include "Navigation/PathFollowingComponent.h"
+
 
 
 EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -33,8 +35,16 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		
 		OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
 		OwnerComp.GetAIOwner()->SetFocus(PlayerRef);
+	}
+	else
+	{
+		IFighter* FighterRef{
+			Cast<IFighter>(
+				OwnerComp.GetAIOwner()->GetCharacter()
+			)
+		};
 
-		
+		FighterRef->Attack();
 	}
 	
 	return EBTNodeResult::InProgress;

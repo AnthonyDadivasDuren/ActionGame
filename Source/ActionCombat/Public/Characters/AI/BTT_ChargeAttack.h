@@ -25,7 +25,7 @@ private:
 
     // Minimum distance required between the boss and its target to consider the charge complete
     UPROPERTY(EditAnywhere)
-    float AcceptableRadius{ 300.0f };
+    float AcceptableRadius{ 250.0f };
 
     // Handles the event when the charge movement is complete or interrupted
     FScriptDelegate MoveCompleteDelegate;

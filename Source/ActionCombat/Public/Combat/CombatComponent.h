@@ -53,4 +53,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HandleResetAttack();
+
+	void RandomAttack();
 };

@@ -73,3 +73,12 @@ void UCombatComponent::HandleResetAttack()
 	bCanAttack = true;
 }
 
+void UCombatComponent::RandomAttack()
+{
+	int RandomIndex{
+		FMath::RandRange(0, AttackAnimations.Num() - 1)
+	};
+
+	CharacterRef->PlayAnimMontage(AttackAnimations[RandomIndex]);
+}
+

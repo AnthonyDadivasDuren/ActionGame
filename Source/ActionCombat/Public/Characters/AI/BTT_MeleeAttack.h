@@ -19,7 +19,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	float AttackRadius {300.0f};
 	UPROPERTY(EditAnywhere)
-	float AcceptableRadius {250.0f};
+	float AcceptableRadius {200.0f};
 
 	FScriptDelegate MoveDelegate;
 
