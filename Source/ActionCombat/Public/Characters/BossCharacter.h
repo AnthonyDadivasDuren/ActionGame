@@ -21,6 +21,11 @@ private:
 
 	class UBlackboardComponent* BlackboardComp;
 
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* DeathAnim;
+
+	class AAIController* ControllerRef;
+
 public:
 	// Sets default values for this character's properties
 	ABossCharacter();
@@ -56,4 +61,10 @@ public:
 
 	UFUNCTION()
 	void HandlePlayerDeath();
+
+	UFUNCTION(BlueprintCallable)
+	void HandleDeath();
+
+	UFUNCTION()
+	void FinishDeathAnim();
 };

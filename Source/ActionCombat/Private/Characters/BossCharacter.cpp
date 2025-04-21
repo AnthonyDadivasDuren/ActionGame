@@ -3,9 +3,11 @@
 #include "Characters/BossCharacter.h"
 #include "Characters/StatsComponent.h"
 #include "AIController.h"
+#include "BrainComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Combat/CombatComponent.h"
 #include "Characters/MainCharacter.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 ABossCharacter::ABossCharacter()
@@ -22,8 +24,9 @@ void ABossCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BlackboardComp = GetController<AAIController>()
-		->GetBlackboardComponent();
+	ControllerRef = GetController<AAIController>();
+
+	BlackboardComp = ControllerRef->GetBlackboardComponent();
 
 	BlackboardComp->SetValueAsEnum(
 		TEXT("CurrentState"),
@@ -88,10 +91,36 @@ float ABossCharacter::GetMeleeRange()
 
 void ABossCharacter::HandlePlayerDeath()
 {
-	GetController<AAIController>()->GetBlackboardComponent()
+	ControllerRef->GetBlackboardComponent()
 		->SetValueAsEnum(
 			TEXT("CurrentState"), EEnemyState::GameOver
 		);
+}
+
+void ABossCharacter::HandleDeath()
+{
+	float Duration{ PlayAnimMontage(DeathAnim) };
+
+	ControllerRef->GetBrainComponent()
+		->StopLogic("defeated");
+
+	FindComponentByClass<UCapsuleComponent>()
+		->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	FTimerHandle DestroyTimerHandle{};
+
+	GetWorld()->GetTimerManager().SetTimer(
+		DestroyTimerHandle,
+		this,
+		&ABossCharacter::FinishDeathAnim,
+		Duration,
+		false
+	);
+}
+
+void ABossCharacter::FinishDeathAnim()
+{
+	Destroy();
 }
 
 	
