@@ -13,11 +13,17 @@ UCLASS()
 class ACTIONCOMBAT_API UBTT_MeleeAttack : public UBTTaskNode
 {
 	GENERATED_BODY()
+
+private:
 	
 	UPROPERTY(EditAnywhere)
 	float AttackRadius {300.0f};
 	UPROPERTY(EditAnywhere)
 	float AcceptableRadius {250.0f};
+
+	FScriptDelegate MoveDelegate;
+
+	bool bIsFinished { false };
 	
 protected:
 	
@@ -30,5 +36,12 @@ protected:
 		uint8* NodeMemory,
 		float DeltaSeconds
 		) override;
+
+public:
+	
+	UBTT_MeleeAttack();
+
+	UFUNCTION()
+	void FinishAttackTask();
 	
 };
