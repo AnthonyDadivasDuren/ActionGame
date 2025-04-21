@@ -57,7 +57,10 @@ void UStatsComponent::ReduceHealth(float Amount)
 	OnHealthPercentUpdateDelegate.Broadcast(
 		GetStatPercentage(EStat::Health, EStat::MaxHealth)
 		);
-
+	if (Stats[EStat::Health] == 0)
+	{
+		OnZeroHealthDelegate.Broadcast();
+	}
 	
 }
 
