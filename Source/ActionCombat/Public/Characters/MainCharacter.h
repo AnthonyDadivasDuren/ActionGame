@@ -78,4 +78,6 @@ public:
 	void HandleDeath();
 
 	virtual void EndLockOnWithActor( AActor* ActorRef ) override;
+
+	virtual bool CanTakeDamage(AActor* Opponent) override;
 };

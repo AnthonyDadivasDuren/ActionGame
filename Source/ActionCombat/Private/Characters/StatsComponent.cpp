@@ -4,7 +4,7 @@
 #include "Characters/StatsComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Characters/EStat.h"
+#include "Interfaces/Fighter.h"
 
 /*
  *	- Manages character statistics and resources (health, stamina, etc.)
@@ -40,10 +40,15 @@ void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
  * Will not reduce health if character is already at 0 health
  * Ensures health stays within valid range (0 to MaxHealth)
  */
-void UStatsComponent::ReduceHealth(float Amount)
+void UStatsComponent::ReduceHealth(float Amount, AActor* Opponent)
 {
 	// Don't process damage if already dead
 	if (Stats[EStat::Health] <= 0) { return; }
+
+	IFighter* FighterRef{ GetOwner<IFighter>() };
+
+	if (!FighterRef->CanTakeDamage(Opponent)) { return; }
+	
 
 	Stats[EStat::Health] -= Amount;
 

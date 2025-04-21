@@ -71,7 +71,7 @@ public:
 
     // Reduces character's health by the specified amount
     UFUNCTION(BlueprintCallable)
-    void ReduceHealth(float Amount);
+    void ReduceHealth(float Amount, AActor* Opponent);
 
     // Reduces character's stamina and triggers regeneration delay
     UFUNCTION(BlueprintCallable)

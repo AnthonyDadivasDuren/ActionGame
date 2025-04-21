@@ -11,6 +11,11 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONCOMBAT_API UBlockComponent : public UActorComponent
 {
 	GENERATED_BODY()
+	
+private:
+	
+	UPROPERTY(EditAnywhere)
+	float StaminaCost{ 10.0f };
 
 public:	
 	// Sets default values for this component's properties
@@ -24,5 +29,6 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	bool Check(AActor* Opponent);
 		
 };

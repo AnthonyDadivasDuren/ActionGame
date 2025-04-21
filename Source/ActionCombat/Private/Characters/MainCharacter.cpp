@@ -85,3 +85,13 @@ void AMainCharacter::EndLockOnWithActor(AActor* ActorRef)
 	LockOnComp->EndLockOn();
 }
 
+bool AMainCharacter::CanTakeDamage(AActor* Opponent)
+{
+	if (PlayerAnim->bIsBlocking)
+	{
+		return BlockComp->Check(Opponent);
+	}
+	
+	return true;
+}
+
