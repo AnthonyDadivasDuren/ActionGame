@@ -71,3 +71,10 @@ bool AMainCharacter::HasEnoughStamina(float Cost)
 
 }
 
+void AMainCharacter::HandleDeath()
+{
+	PlayAnimMontage(DeathAnimMontage);
+
+	DisableInput(GetController<APlayerController>());
+}
+
