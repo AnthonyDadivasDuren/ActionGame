@@ -33,6 +33,9 @@ protected:
 	float CurrentDirection{ 0.0f };
 	
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsBlocking{ false };
+	
 	// Updates combat state based on lock-on target presence
 	UFUNCTION(BlueprintCallable)
 	void HandleUpdatedTarget(AActor* NewTargetActorRef);

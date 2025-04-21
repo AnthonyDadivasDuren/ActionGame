@@ -32,42 +32,42 @@ void AEnemyProjectile::Tick(float DeltaTime)
 
 void AEnemyProjectile::HandleBeginOverlap(AActor* OtherActor)
 {
-	APawn* PawnRef{ Cast<APawn> (OtherActor) };
+    if (!OtherActor) { return; }
+    
+    APawn* PawnRef{ Cast<APawn>(OtherActor) };
+    if (!PawnRef || !PawnRef->IsPlayerControlled()) { return; }
 
-	if (!PawnRef->IsPlayerControlled()) { return; }
+    // Rest of the existing code...
+    FindComponentByClass<UParticleSystemComponent>()
+        ->SetTemplate(HitTemplate);
 
-	//UE_LOG(LogTemp, Warning, TEXT("Overlapped With PLayer: %s"), *PawnRef->GetName());
+    FindComponentByClass<UProjectileMovementComponent>()
+        ->StopMovementImmediately();
 
-	FindComponentByClass<UParticleSystemComponent>()
-		->SetTemplate(HitTemplate);
+    FTimerHandle DeathTimerHandle{};
+    
+    GetWorldTimerManager().SetTimer(
+        DeathTimerHandle,
+        this,
+        &AEnemyProjectile::DestroyProjectile,
+        0.5f
+    );
 
-	FindComponentByClass<UProjectileMovementComponent>()
-		->StopMovementImmediately();
-
-	FTimerHandle DeathTimerHandle{};
-	
-	GetWorldTimerManager().SetTimer(
-		DeathTimerHandle,
-		this,
-		&AEnemyProjectile::DestroyProjectile,
-		0.5f
-	);
-
-	FindComponentByClass<USphereComponent>()
-		->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	
-	FDamageEvent ProjectileAttackEvent{};
-	
-	PawnRef->TakeDamage(
-		Damage,
-		ProjectileAttackEvent,
-		PawnRef->GetController(),
-		this
-		);
+    FindComponentByClass<USphereComponent>()
+        ->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    
+    FDamageEvent ProjectileAttackEvent{};
+    
+    PawnRef->TakeDamage(
+        Damage,
+        ProjectileAttackEvent,
+        PawnRef->GetController(),
+        this
+    );
 }
+
 
 void AEnemyProjectile::DestroyProjectile()
 {
 	Destroy();
 }
-

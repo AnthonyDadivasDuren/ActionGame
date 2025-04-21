@@ -43,6 +43,9 @@ public:
 	// Event that gets triggered when the target is updated (bind in Blueprint or code)
 	UPROPERTY(BlueprintAssignable)
 	FOnUpdatedTargetSignature OnUpdatedTargetDelegate;
+
+	// Ends the current lock-on
+	void EndLockOn();
 	
 protected:
 	// Called when the game starts
@@ -51,9 +54,7 @@ protected:
 	// Initiates lock-on to a nearby target
 	UFUNCTION(BlueprintCallable)
 	void StartLockOn(float Radius = 1250.0f);
-
-	// Ends the current lock-on
-	void EndLockOn();
+	
 
 	// Toggles between starting and ending lock-on
 	UFUNCTION(BlueprintCallable)
