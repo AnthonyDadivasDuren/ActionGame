@@ -29,10 +29,12 @@ void UBTT_ChargeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 		ChargeAtPlayer();
 	}
 
-	ControllerRef->ReceiveMoveCompleted.Remove(MoveCompleteDelegate);
+	
 
 	if (!bIsFinished) { return; }
 
+	ControllerRef->ReceiveMoveCompleted.Remove(MoveCompleteDelegate);
+	
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	
 }
@@ -56,6 +58,7 @@ EBTNodeResult::Type UBTT_ChargeAttack::ExecuteTask(UBehaviorTreeComponent& Owner
 {
 	// Get the AI controller reference from the behavior
 	ControllerRef = OwnerComp.GetAIOwner();
+	
 
 	// Get the character being controlled by the AI
 	CharacterRef = ControllerRef->GetCharacter();
@@ -124,7 +127,8 @@ void UBTT_ChargeAttack::HandleMoveCompleted()
 		false
 	);
 
-	CharacterRef->GetCharacterMovement()->MaxWalkSpeed = OriginalWalkSpeed;
+	CharacterRef->GetCharacterMovement()
+		->MaxWalkSpeed = OriginalWalkSpeed;
 	
 }
 
