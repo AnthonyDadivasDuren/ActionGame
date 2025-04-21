@@ -69,8 +69,7 @@ void UBTT_MeleeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	float Distance {
 		OwnerComp.GetBlackboardComponent()->GetValueAsFloat(TEXT("Distance"))
 	};
-
-	AAIController AIRef* AIRef{ OwnerComp.GetAIOwner() };
+	
 
 	if (Distance > MeleeRange)
 	{
@@ -81,11 +80,11 @@ void UBTT_MeleeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 
 		FinishLatentTask(OwnerComp, EBTNodeResult::Aborted);
 
-		AIRef->StopMovement();
+		OwnerComp.GetAIOwner()->StopMovement();
 
-		AIRef->ClearFocus(EAIFocusPriority::Gameplay);
+		OwnerComp.GetAIOwner()->ClearFocus(EAIFocusPriority::Gameplay);
 
-		AIRef->ReceiveMoveCompleted.Remove(MoveDelegate);
+		OwnerComp.GetAIOwner()->ReceiveMoveCompleted.Remove(MoveDelegate);
 	}
 	
 	if (!bIsFinished){ return; }
