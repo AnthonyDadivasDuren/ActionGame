@@ -13,7 +13,12 @@ UCLASS()
 class ACTIONCOMBAT_API UBTT_MeleeAttack : public UBTTaskNode
 {
 	GENERATED_BODY()
-
+	
+	UPROPERTY(EditAnywhere)
+	float AttackRadius {300.0f};
+	UPROPERTY(EditAnywhere)
+	float AcceptableRadius {250.0f};
+	
 protected:
 	
 	virtual EBTNodeResult::Type ExecuteTask(
