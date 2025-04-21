@@ -75,10 +75,25 @@ void UCombatComponent::HandleResetAttack()
 
 void UCombatComponent::RandomAttack()
 {
+	if (AttackAnimations.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No attack animations assigned to CombatComponent"));
+		return;
+	}
+
+	
 	int RandomIndex{
 		FMath::RandRange(0, AttackAnimations.Num() - 1)
 	};
 
-	CharacterRef->PlayAnimMontage(AttackAnimations[RandomIndex]);
+	if (!AttackAnimations[RandomIndex])
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid animation montage at index %d"), RandomIndex);
+		return;
+	}
+
+
+	AnimDuration = CharacterRef
+		->PlayAnimMontage(AttackAnimations[RandomIndex]);
 }
 

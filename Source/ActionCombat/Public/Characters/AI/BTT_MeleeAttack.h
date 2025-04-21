@@ -24,6 +24,9 @@ private:
 	FScriptDelegate MoveDelegate;
 
 	bool bIsFinished { false };
+
+	UPROPERTY(EditAnywhere)
+	float MeleeRange{ 1250.0f };
 	
 protected:
 	

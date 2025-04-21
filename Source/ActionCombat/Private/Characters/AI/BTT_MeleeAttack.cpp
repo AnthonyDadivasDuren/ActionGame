@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "Interfaces/Fighter.h"
 #include "GameFramework/Character.h"
+#include "Characters/EEnemyState.h"
 #include "Navigation/PathFollowingComponent.h"
 
 
@@ -19,7 +20,10 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		OwnerComp.GetBlackboardComponent()
 		->GetValueAsFloat(TEXT("Distance"))
 	};
+	
 
+	AAIController* AIRef{ OwnerComp.GetAIOwner() };
+	
 	if (Distance > AttackRadius)
 	{
 		APawn* PlayerRef { GetWorld()->GetFirstPlayerController()->GetPawn()};
@@ -29,22 +33,32 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		MoveRequest.SetUsePathfinding(true);
 		MoveRequest.SetAcceptanceRadius(AcceptableRadius);
 
-		OwnerComp.GetAIOwner()->ReceiveMoveCompleted.AddUnique(
+		AIRef->ReceiveMoveCompleted.AddUnique(
 			MoveDelegate
 			);
 		
-		OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
-		OwnerComp.GetAIOwner()->SetFocus(PlayerRef);
+		AIRef->MoveTo(MoveRequest);
+		AIRef->SetFocus(PlayerRef);
 	}
 	else
 	{
 		IFighter* FighterRef{
 			Cast<IFighter>(
-				OwnerComp.GetAIOwner()->GetCharacter()
+				AIRef->GetCharacter()
 			)
 		};
 
 		FighterRef->Attack();
+
+		FTimerHandle AttackTimerHandle;
+		
+		AIRef->GetCharacter()->GetWorldTimerManager().SetTimer(
+			AttackTimerHandle,
+			this,
+			&UBTT_MeleeAttack::FinishAttackTask,
+			FighterRef->GetAnimDuration(),
+			false
+			);
 	}
 	
 	return EBTNodeResult::InProgress;
@@ -52,6 +66,28 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 void UBTT_MeleeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
+	float Distance {
+		OwnerComp.GetBlackboardComponent()->GetValueAsFloat(TEXT("Distance"))
+	};
+
+	AAIController AIRef* AIRef{ OwnerComp.GetAIOwner() };
+
+	if (Distance > MeleeRange)
+	{
+		OwnerComp.GetBlackboardComponent()
+			->SetValueAsEnum(TEXT("CurrentState"), EEnemyState::Range);
+		
+		AbortTask(OwnerComp, NodeMemory);
+
+		FinishLatentTask(OwnerComp, EBTNodeResult::Aborted);
+
+		AIRef->StopMovement();
+
+		AIRef->ClearFocus(EAIFocusPriority::Gameplay);
+
+		AIRef->ReceiveMoveCompleted.Remove(MoveDelegate);
+	}
+	
 	if (!bIsFinished){ return; }
 
 	OwnerComp.GetAIOwner()->ReceiveMoveCompleted.Remove(MoveDelegate);

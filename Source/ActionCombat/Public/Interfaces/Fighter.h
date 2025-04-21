@@ -25,4 +25,6 @@ public:
 	virtual float GetDamage() { return 0.0f; } //virtual = Function Can be overriden
 
 	virtual void Attack() {}
+
+	virtual float GetAnimDuration() { return 0.0f; }
 };

@@ -69,6 +69,11 @@ void ABossCharacter::Attack()
 	CombatComp->RandomAttack();
 }
 
+float ABossCharacter::GetAnimDuration()
+{
+	return CombatComp->AnimDuration;
+}
+
 	
 
 
