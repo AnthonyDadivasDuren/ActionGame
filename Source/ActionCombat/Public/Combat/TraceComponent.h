@@ -29,6 +29,9 @@ private:
 
 	// List of actors already hit during this attack to avoid duplicates
 	TArray<AActor*> TargetsToIgnore;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* HitParticleTemplate;
 	
 public:	
 	// Sets default values for this component's properties

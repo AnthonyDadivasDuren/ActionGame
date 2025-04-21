@@ -6,6 +6,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Interfaces/Fighter.h"
+#include "kismet/GameplayStatics.h"
 
 
 // Sets default values for this component's properties
@@ -173,6 +174,12 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 		
 		// Add to ignore list so we don't damage them again this frame
 		TargetsToIgnore.AddUnique(TargetActor);
+
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			HitParticleTemplate,
+			Hit.ImpactPoint
+		);
 	}
 }
 
