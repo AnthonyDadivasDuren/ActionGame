@@ -56,6 +56,11 @@ void ABossCharacter::DetectPawn(APawn* DetectedPawn, APawn* PawnToDetect)
 	
 	//UE_LOG(LogTemp, Warning, TEXT("Player detected: %s"), *DetectedPawn->GetName());
 }
+
+float ABossCharacter::GetDamage()
+{
+	return StatsComp->Stats[EStat::Strength];
+}
 	
 
 
