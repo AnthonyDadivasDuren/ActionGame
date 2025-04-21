@@ -25,10 +25,22 @@ EBTNodeResult::Type UBTT_RangeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	// Fail if character is invalid
 	if (!IsValid(CharacterRef)) { return EBTNodeResult::Failed; }
 
-	
+	float Distance {
+		OwnerComp.GetBlackboardComponent()->GetValueAsFloat(TEXT("Distance"))
+	};
+
+	if (Distance < MeleeRange)
+	{
+		OwnerComp.GetBlackboardComponent()
+			->SetValueAsEnum(TEXT("CurrentState"), EEnemyState::Melee);
+		
+		AbortTask(OwnerComp, NodeMemory);
+
+		return EBTNodeResult::Aborted;
+		
+	}
 	
 	// Play the attack animation montage
-
 	CharacterRef->PlayAnimMontage(AnimMontage);
 
 	double RandomValue { UKismetMathLibrary::RandomFloat() };
