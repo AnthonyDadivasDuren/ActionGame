@@ -19,6 +19,6 @@ enum class EStat : uint8
 	MaxHealth UMETA(DisplayName = "Max Vitality"), // Maximum health capacity
 	Strength UMETA(DisplayName = "Might"),        // Character's attack power
 	Stamina UMETA(DisplayName = "Endurance"),     // Current stamina value
-	MaxStamina UMETA(DisplayName = "Max Endurance") // Maximum stamina capacity
-
+	MaxStamina UMETA(DisplayName = "Max Endurance"), // Maximum stamina capacity
+	MeleeRange UMETA(DisplayName = "Melee Range") // Melee Range for Enemy
 };

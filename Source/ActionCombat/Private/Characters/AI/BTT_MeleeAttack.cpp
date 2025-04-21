@@ -69,9 +69,14 @@ void UBTT_MeleeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	float Distance {
 		OwnerComp.GetBlackboardComponent()->GetValueAsFloat(TEXT("Distance"))
 	};
-	
 
-	if (Distance > MeleeRange)
+	AAIController* AIRef{ OwnerComp.GetAIOwner() };
+	
+	IFighter* FighterRef{
+		Cast<IFighter>(AIRef->GetCharacter())
+	};
+
+	if (Distance > FighterRef->GetMeleeRange())
 	{
 		OwnerComp.GetBlackboardComponent()
 			->SetValueAsEnum(TEXT("CurrentState"), EEnemyState::Range);
@@ -80,22 +85,24 @@ void UBTT_MeleeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 
 		FinishLatentTask(OwnerComp, EBTNodeResult::Aborted);
 
-		OwnerComp.GetAIOwner()->StopMovement();
+		AIRef->StopMovement();
 
-		OwnerComp.GetAIOwner()->ClearFocus(EAIFocusPriority::Gameplay);
+		AIRef->ClearFocus(EAIFocusPriority::Gameplay);
 
-		OwnerComp.GetAIOwner()->ReceiveMoveCompleted.Remove(MoveDelegate);
+		AIRef->ReceiveMoveCompleted.Remove(MoveDelegate);
 	}
 	
 	if (!bIsFinished){ return; }
 
-	OwnerComp.GetAIOwner()->ReceiveMoveCompleted.Remove(MoveDelegate);
+	AIRef->ReceiveMoveCompleted.Remove(MoveDelegate);
 	
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 }
 
 UBTT_MeleeAttack::UBTT_MeleeAttack()
 {
+	//bCreateNodeInstance = true; needed if multiple enemies, also needed in every task
+	
 	MoveDelegate.BindUFunction(this, "FinishAttackTask");
 
 	bNotifyTick = true;
