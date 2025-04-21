@@ -9,12 +9,8 @@
 #include "Navigation/PathFollowingComponent.h"
 
 
-/**
- * Executes the charge attack behavior tree task
- * InProgress to indicate the charge attack is ongoing
- */
-
-
+// Monitors the blackboard component to check if the AI is ready to perform a charge attack.
+// When ready, it initiates the charge attack sequence and resets the charge flag.
 void UBTT_ChargeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	bool bIsReadyToCharge{ OwnerComp.GetBlackboardComponent()
@@ -22,6 +18,7 @@ void UBTT_ChargeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 
 	};
 
+	// Reset charge flag and start charging
 	if (bIsReadyToCharge)
 	{
 		OwnerComp.GetBlackboardComponent()
@@ -33,11 +30,21 @@ void UBTT_ChargeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 	}
 }
 
+
+// Constructor that enables tick functionality for continuous monitoring
+// and sets up the delegate to handle movement completion events
 UBTT_ChargeAttack::UBTT_ChargeAttack()
 {
 	bNotifyTick = true;
+
+	MoveCompleteDelegate.BindUFunction(
+		this, "HandleMoveCompleted"
+	);
+
 }
 
+// Initializes the charge attack by setting up necessary references and animation state
+// Returns InProgress to keep the behavior tree task running during the charge
 EBTNodeResult::Type UBTT_ChargeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	// Get the AI controller reference from the behavior
@@ -66,6 +73,8 @@ EBTNodeResult::Type UBTT_ChargeAttack::ExecuteTask(UBehaviorTreeComponent& Owner
 	return EBTNodeResult::InProgress;
 }
 
+// Configures and executes the AI movement towards the player
+// Sets up pathfinding parameters, movement request, and focuses the AI on the player
 void UBTT_ChargeAttack::ChargeAtPlayer()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Running"))
@@ -81,5 +90,32 @@ void UBTT_ChargeAttack::ChargeAtPlayer()
 
 	ControllerRef->MoveTo(MoveRequest);
 	ControllerRef->SetFocus(PlayerRef);
+
+	ControllerRef->ReceiveMoveCompleted.AddUnique(MoveCompleteDelegate);
 	
+}
+
+// Called when the AI reaches its destination or stops charging
+// Resets the charging animation state and starts a 1-second cooldown timer
+void UBTT_ChargeAttack::HandleMoveCompleted()
+{
+	BossAnim->bIsCharging = false;
+
+	FTimerHandle AttackTimerHandle;
+	
+	CharacterRef->GetWorldTimerManager().SetTimer(
+		AttackTimerHandle,
+		this,
+		&UBTT_ChargeAttack::FinishAttackTask,
+		1.0f,
+		false
+	);
+	
+}
+
+// Finalizes the charge attack sequence after the cooldown period
+// Logs completion message and allows the behavior tree to continue
+void UBTT_ChargeAttack::FinishAttackTask()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Task Finished!"))
 }

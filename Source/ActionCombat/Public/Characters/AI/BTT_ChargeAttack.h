@@ -6,42 +6,56 @@
 #include "BehaviorTree/BTTaskNode.h"
 #include "BTT_ChargeAttack.generated.h"
 
-/**
- * 
- */
+// Behavior Tree Task that handles the boss's charge attack behavior
+// Controls movement, animation states, and attack timing
 UCLASS()
 class ACTIONCOMBAT_API UBTT_ChargeAttack : public UBTTaskNode
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+    
 private:
-	
-	AAIController* ControllerRef;
+    // Controls the AI character's movement and behavior during the charge attack
+    AAIController* ControllerRef;
 
-	ACharacter* CharacterRef;
+    // The actual boss character that performs the charge attack
+    ACharacter* CharacterRef;
 
-	class UBossAnimInstance* BossAnim;
+    // Manages the boss's animation states and transitions during charging
+    class UBossAnimInstance* BossAnim;
 
-	UPROPERTY(EditAnywhere)
-	float AcceptableRadius{ 100.0f };
+    // Minimum distance required between the boss and its target to consider the charge complete
+    UPROPERTY(EditAnywhere)
+    float AcceptableRadius{ 100.0f };
+
+    // Handles the event when the charge movement is complete or interrupted
+    FScriptDelegate MoveCompleteDelegate;
+
 protected:
-	
-virtual void TickTask(
-	UBehaviorTreeComponent& OwnerComp,
-	uint8* NodeMemory,
-	float DeltaSeconds)
-	override;
-	
-	
+    // Updates the charge attack state each frame, checking if conditions are met to begin charging
+    virtual void TickTask(
+        UBehaviorTreeComponent& OwnerComp,
+        uint8* NodeMemory,
+        float DeltaSeconds)
+        override;
+    
 public:
-	UBTT_ChargeAttack();
-	
-	virtual EBTNodeResult::Type ExecuteTask(
-		UBehaviorTreeComponent& OwnerComp,
-		uint8* NodeMemory
-			) override;
+    // Sets up initial task parameters and binds the movement completion delegate
+    UBTT_ChargeAttack();
+    
+    // Initializes the charge attack sequence and sets up necessary references
+    virtual EBTNodeResult::Type ExecuteTask(
+        UBehaviorTreeComponent& OwnerComp,
+        uint8* NodeMemory
+            ) override;
 
+    // Initiates the movement towards the player with pathfinding
+    void ChargeAtPlayer();
 
-	void ChargeAtPlayer();
-	
+    // Processes the completion of the charge movement
+    UFUNCTION()
+    void HandleMoveCompleted();
+
+    // Completes the charge attack sequence after cooldown
+    UFUNCTION()
+    void FinishAttackTask();
 };
