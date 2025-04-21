@@ -38,68 +38,80 @@ void UTraceComponent::BeginPlay()
 void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	
 	// Skip if not currently attacking
 	if (!bIsAttacking) { return; }
-
-	// Get socket locations and rotation for the trace
-	FVector StartSocketLocation { SkeletalComp->GetSocketLocation(FName(Start)) };
-	FVector EndSocketLocation { SkeletalComp->GetSocketLocation(FName(End)) };
-	FQuat ShapeRotation { SkeletalComp->GetSocketQuaternion(FName(Rotation)) };
 	
-	TArray<FHitResult> OutResults;
-
-	// Calculate the distance between the sockets and create a box shape
-	double WeaponDistance {
-		FVector::Distance(StartSocketLocation, EndSocketLocation)
-	};
-	FVector BoxHalfExtent {
-		BoxCollisionLength, BoxCollisionLength, WeaponDistance
-	};
-	BoxHalfExtent /= 2; // BoxHalfExtent = BoxHalfExtent / 2
-	FCollisionShape Box{
-		FCollisionShape::MakeBox(BoxHalfExtent)
-	};
-
-	// Set up collision query to ignore the owner
-	FCollisionQueryParams IgnoreParams {
-		FName { TEXT("Ignore Params") },
-		false,
-		GetOwner(),
-	};
+	TArray<FHitResult> AllResults;
 	
-	// Perform a sweep using a box shape to find overlapping actors
-	bool bHasFoundTargets  { GetWorld()->SweepMultiByChannel(
-		OutResults,
-		StartSocketLocation,
-		EndSocketLocation,
-		ShapeRotation,
-		ECollisionChannel::ECC_GameTraceChannel1,
-		Box,
-		IgnoreParams
-			
-	) };
-
-
-	// Optional debug drawing of the trace box
-	if (bDebugMode)
+	for (const FTraceSockets Socket: Sockets)
 	{
-		FVector CenterPoint{
-			UKismetMathLibrary::VLerp(
-				StartSocketLocation, EndSocketLocation, 0.5f
-			)
+		// Get socket locations and rotation for the trace
+		FVector StartSocketLocation {
+			SkeletalComp->GetSocketLocation(Socket.Start) };
+		FVector EndSocketLocation {
+			SkeletalComp->GetSocketLocation(Socket.End) };
+		FQuat ShapeRotation {
+			SkeletalComp->GetSocketQuaternion(Socket.Rotation) };
+	
+		TArray<FHitResult> OutResults;
+
+		// Calculate the distance between the sockets and create a box shape
+		double WeaponDistance {
+			FVector::Distance(StartSocketLocation, EndSocketLocation)
+		};
+		FVector BoxHalfExtent {
+			BoxCollisionLength, BoxCollisionLength, WeaponDistance
+		};
+		BoxHalfExtent /= 2; // BoxHalfExtent = BoxHalfExtent / 2
+		FCollisionShape Box{
+			FCollisionShape::MakeBox(BoxHalfExtent)
 		};
 
+		// Set up collision query to ignore the owner
+		FCollisionQueryParams IgnoreParams {
+			FName { TEXT("Ignore Params") },
+			false,
+			GetOwner(),
+		};
+	
+		// Perform a sweep using a box shape to find overlapping actors
+		bool bHasFoundTargets  { GetWorld()->SweepMultiByChannel(
+			OutResults,
+			StartSocketLocation,
+			EndSocketLocation,
+			ShapeRotation,
+			ECollisionChannel::ECC_GameTraceChannel1,
+			Box,
+			IgnoreParams
+			
+		) };
+
+		for (FHitResult& Hit : OutResults) {
+			AllResults.Add(Hit);
+		}
+
+
+		// Optional debug drawing of the trace box
+		if (bDebugMode)
+		{
+			FVector CenterPoint{
+				UKismetMathLibrary::VLerp(
+					StartSocketLocation, EndSocketLocation, 0.5f
+				)
+			};
+
 		
-		UKismetSystemLibrary::DrawDebugBox(
-			GetWorld(),
-			CenterPoint,
-			Box.GetExtent(),
-			bHasFoundTargets ? FLinearColor::Green : FLinearColor::Red, // More Compact If statement if ? Then : else
-			ShapeRotation.Rotator(),
-			1.0f,
-			2.0f
-		);
+			UKismetSystemLibrary::DrawDebugBox(
+				GetWorld(),
+				CenterPoint,
+				Box.GetExtent(),
+				bHasFoundTargets ? FLinearColor::Green : FLinearColor::Red, // More Compact If statement if ? Then : else
+				ShapeRotation.Rotator(),
+				1.0f,
+				2.0f
+			);
+		}
 	}
 
 
@@ -126,7 +138,7 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 	
 	// Skip if no hits
-	if (OutResults.Num() == 0) { return; }
+	if (AllResults.Num() == 0) { return; }
 
 	// Determine how much damage to apply
 	float CharacterDamage{ 0.0f };
@@ -144,7 +156,7 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	FDamageEvent TargetAttackedEvent;
 
 	// Loop through all hit results
-	for (const FHitResult& Hit : OutResults)
+	for (const FHitResult& Hit : AllResults)
 	{
 		AActor* TargetActor{ Hit.GetActor() };
 

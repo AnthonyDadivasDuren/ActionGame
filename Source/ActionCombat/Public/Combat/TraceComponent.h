@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Combat/FTraceSockets.h"
 #include "TraceComponent.generated.h"
 
 
@@ -15,16 +16,9 @@ private:
 	// Reference to the character's skeletal mesh (used for socket positions)
 	USkeletalMeshComponent* SkeletalComp;
 
-	// Names of the sockets used for start, end, and rotation of the trace
 	UPROPERTY(EditAnywhere)
-	FName Start;
-
-	UPROPERTY(EditAnywhere)
-	FName End;
-
-	UPROPERTY(EditAnywhere)
-	FName Rotation;
-
+	TArray<FTraceSockets> Sockets;
+	
 	// Length of the box collision (width/depth is constant)
 	UPROPERTY(EditAnywhere)
 	double BoxCollisionLength { 30.0 };
