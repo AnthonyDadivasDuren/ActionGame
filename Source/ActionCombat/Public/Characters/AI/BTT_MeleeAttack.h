@@ -17,7 +17,7 @@ class ACTIONCOMBAT_API UBTT_MeleeAttack : public UBTTaskNode
 private:
 	
 	UPROPERTY(EditAnywhere)
-	float AttackRadius {300.0f};
+	float AttackRadius {400.0f};
 	UPROPERTY(EditAnywhere)
 	float AcceptableRadius {200.0f};
 
