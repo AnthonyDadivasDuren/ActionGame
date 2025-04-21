@@ -11,6 +11,18 @@
  *
  */
 
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(
+    FOnHealthPercentUpdateSignature,
+    UStatsComponent, OnHealthPercentUpdateDelegate,
+    float, Percentage
+);
+
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(
+    FOnStaminaPercentUpdateSignature,
+    UStatsComponent, OnStaminaPercentUpdateDelegate,
+    float, Percentage
+);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ACTIONCOMBAT_API UStatsComponent : public UActorComponent
 {
@@ -35,6 +47,12 @@ public:
     // Map containing all character statistics and their current values
     UPROPERTY(EditAnywhere)
     TMap<EStat, float> Stats;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnHealthPercentUpdateSignature OnHealthPercentUpdateDelegate;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnStaminaPercentUpdateSignature OnStaminaPercentUpdateDelegate;
     
 protected:
     // Initialization when game starts
@@ -59,4 +77,7 @@ public:
     // Enables stamina regeneration after delay period
     UFUNCTION()
     void EnableRegen();
+
+    UFUNCTION(BlueprintPure)
+    float GetStatPercentage(EStat Current, EStat Max);
 };
