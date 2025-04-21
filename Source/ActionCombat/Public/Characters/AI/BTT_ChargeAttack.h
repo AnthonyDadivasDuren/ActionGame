@@ -35,6 +35,8 @@ private:
     UPROPERTY(EditAnywhere)
     float ChargeWalkSpeed { 2000.0f };
 
+    bool bIsFinished { false }; 
+
 protected:
     // Updates the charge attack state each frame, checking if conditions are met to begin charging
     virtual void TickTask(

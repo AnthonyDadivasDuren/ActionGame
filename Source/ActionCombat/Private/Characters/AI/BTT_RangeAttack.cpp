@@ -15,6 +15,7 @@
 EBTNodeResult::Type UBTT_RangeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Sucess!"))
+
 	
 	// Get the AI character
 	ACharacter* CharacterRef{
@@ -24,6 +25,8 @@ EBTNodeResult::Type UBTT_RangeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	// Fail if character is invalid
 	if (!IsValid(CharacterRef)) { return EBTNodeResult::Failed; }
 
+	
+	
 	// Play the attack animation montage
 
 	CharacterRef->PlayAnimMontage(AnimMontage);

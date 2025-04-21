@@ -16,7 +16,7 @@ void UBTT_ChargeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 {
 	bool bIsReadyToCharge{ OwnerComp.GetBlackboardComponent()
 		->GetValueAsBool(TEXT("IsReadyToCharge"))
-
+		
 	};
 
 	// Reset charge flag and start charging
@@ -26,9 +26,15 @@ void UBTT_ChargeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 			->SetValueAsBool(
 				TEXT("IsReadyToCharge"), false
 			);
-		
 		ChargeAtPlayer();
 	}
+
+	ControllerRef->ReceiveMoveCompleted.Remove(MoveCompleteDelegate);
+
+	if (!bIsFinished) { return; }
+
+	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	
 }
 
 
@@ -69,6 +75,7 @@ EBTNodeResult::Type UBTT_ChargeAttack::ExecuteTask(UBehaviorTreeComponent& Owner
 			TEXT("IsReadyToCharge"), false
 		);
 
+	bIsFinished = false;
 	
 	// Return InProgress since charging is an ongoing action
 	return EBTNodeResult::InProgress;
@@ -125,7 +132,9 @@ void UBTT_ChargeAttack::HandleMoveCompleted()
 // Logs completion message and allows the behavior tree to continue
 void UBTT_ChargeAttack::FinishAttackTask()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Task Finished!"))
+	//UE_LOG(LogTemp, Warning, TEXT("Task Finished!"))
+
+	bIsFinished = true;
 
 	
 }
