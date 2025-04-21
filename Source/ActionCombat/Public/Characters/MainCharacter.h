@@ -25,6 +25,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* DeathAnimMontage;
 
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* HurtAnimMontage;
 public:
 	// Sets default values for this character's properties
 	AMainCharacter();
@@ -80,4 +82,7 @@ public:
 	virtual void EndLockOnWithActor( AActor* ActorRef ) override;
 
 	virtual bool CanTakeDamage(AActor* Opponent) override;
+
+	UFUNCTION(BlueprintCallable)
+	void PlayHurtAnim();
 };

@@ -95,3 +95,8 @@ bool AMainCharacter::CanTakeDamage(AActor* Opponent)
 	return true;
 }
 
+void AMainCharacter::PlayHurtAnim()
+{
+	PlayAnimMontage(HurtAnimMontage);
+}
+

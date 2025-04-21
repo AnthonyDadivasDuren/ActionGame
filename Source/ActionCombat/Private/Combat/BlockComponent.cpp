@@ -51,6 +51,10 @@ bool UBlockComponent::Check(AActor* Opponent)
 	{
 		return true;
 	}
+
+	CharacterRef->PlayAnimMontage(BlockAnimMontage);
+
+	OnBlockDelegate.Broadcast(StaminaCost);
 	
 	
 	return false;
