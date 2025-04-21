@@ -59,7 +59,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	float RollCost{ 5.0f };
 
-	bool bIsRollActive{ false };
 
 public:	
 	// Sets default values for this component's properties
@@ -71,6 +70,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnRollSignature OnRollDelegate;
+
+	bool bIsRollActive{ false };
 
 protected:
 	// Called when the game starts
