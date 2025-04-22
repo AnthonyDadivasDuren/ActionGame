@@ -26,6 +26,29 @@ private:
 
 	class AAIController* ControllerRef;
 
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UAnimMontage* RearAttackMontage;
+    
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float BehindCheckTime = 1.0f; // Time player needs to stay behind before triggering rear attack
+    
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float BehindAngleThreshold = 120.0f; // Angle that defines "behind" the boss (in degrees)
+    
+	float TimeBehindBoss = 0.0f;
+	bool bIsPlayerBehind = false;
+	
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float TurnSpeed = 8.0f;
+    
+	bool bIsTurning = false;
+	FRotator TargetRotation;
+
+    
+	FTimerHandle RearAttackTimerHandle;
+
+
 public:
 	// Sets default values for this character's properties
 	ABossCharacter();
@@ -67,4 +90,9 @@ public:
 
 	UFUNCTION()
 	void FinishDeathAnim();
+
+	void CheckPlayerPosition();
+	void PerformRearAttack();
+	bool IsPlayerBehind() const;
+	
 };

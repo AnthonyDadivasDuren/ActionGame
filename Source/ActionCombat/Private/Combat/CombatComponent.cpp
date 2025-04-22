@@ -17,6 +17,7 @@ UCombatComponent::UCombatComponent()
 }
 
 
+
 // Called when the game starts
 void UCombatComponent::BeginPlay()
 {
