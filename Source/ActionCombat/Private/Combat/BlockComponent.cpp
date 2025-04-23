@@ -135,6 +135,7 @@ void UBlockComponent::OnSuccessfulParry(AActor* ParriedActor)
 
 
 
+
 float UBlockComponent::GetReducedDamage(float IncomingDamage) const
 {
 	return IncomingDamage * BlockDamageReduction;  
