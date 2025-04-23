@@ -49,7 +49,9 @@ bool UBlockComponent::Check(AActor* Opponent)
 	FVector PlayerForward{ CharacterRef->GetActorForwardVector() };
 	double Result{ FVector::DotProduct(OpponentForward, PlayerForward) };
 
-	if (Result > 0) { return true; }
+	// Allow blocking in a wider angle (less than 0.5 means roughly 120 degree arc)
+	if (Result > 0.5f) { return true; }  
+
 
 	CharacterRef->PlayAnimMontage(BlockAnimMontage);
 	OnBlockDelegate.Broadcast(StaminaCost);
@@ -99,7 +101,8 @@ void UBlockComponent::OnSuccessfulParry(AActor* ParriedActor)
 
 float UBlockComponent::GetReducedDamage(float IncomingDamage) const
 {
-	return IncomingDamage * BlockDamageReduction;
+	return IncomingDamage * BlockDamageReduction;  
+
 
 }
 

@@ -35,7 +35,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	float ParryStartupWindow = 0.1f;  // Time before parry becomes active
 
-	float BlockStartTime = 0.0f;
+	float BlockStartTime  { 0.0f };
 
 	
 	UPROPERTY(EditAnywhere)

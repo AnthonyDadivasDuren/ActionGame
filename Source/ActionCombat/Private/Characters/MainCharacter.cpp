@@ -90,11 +90,10 @@ void AMainCharacter::EndLockOnWithActor(AActor* ActorRef)
 
 bool AMainCharacter::CanTakeDamage(AActor* Opponent)
 {
-    // Determines if character can take damage based on current state
-    // Returns false if character is rolling (invulnerable)
+    // Invulnerable while rolling
     if (PlayerActionsComp->bIsRollActive) { return false; }
     
-    // If blocking, check if the block is successful against this opponent
+    // If blocking, check for parry first
     if (PlayerAnim->bIsBlocking)
     {
         // Check for parry first
@@ -104,11 +103,13 @@ bool AMainCharacter::CanTakeDamage(AActor* Opponent)
             return false;
         }
         
-        return BlockComp->Check(Opponent);
+        // Return true to allow damage calculation with reduction
+        return true;
     }
     
-    // Character can take damage if not rolling or successfully blocking
+    // Character can take full damage if not rolling or blocking
     return true;
+
 }
 
 void AMainCharacter::PlayHurtAnim(TSubclassOf<UCameraShakeBase> CameraShakeTemplate)
@@ -124,13 +125,33 @@ void AMainCharacter::PlayHurtAnim(TSubclassOf<UCameraShakeBase> CameraShakeTempl
 
 float AMainCharacter::CalculateReceivedDamage(float IncomingDamage, AActor* DamageCauser)
 {
-    // If blocking, reduce the damage
+    // If blocking and block check returns false (successful block)
     if (PlayerAnim && PlayerAnim->bIsBlocking)
     {
-        return BlockComp->GetReducedDamage(IncomingDamage);
+        // BlockComp->Check returns false when block is successful
+        if (!BlockComp->Check(DamageCauser))  // Block succeeded
+        {
+            return BlockComp->GetReducedDamage(IncomingDamage);
+        }
     }
     
-    // Return full damage if not blocking
+    // Return full damage if not blocking or if block failed
     return IncomingDamage;
+
+    
+}
+
+float AMainCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+    class AController* EventInstigator, AActor* DamageCauser)
+{
+    if (!CanTakeDamage(DamageCauser))
+    {
+        return 0.0f;
+    }
+
+    float FinalDamage = CalculateReceivedDamage(DamageAmount, DamageCauser);
+    
+    // Apply the final damage through the parent class
+    return Super::TakeDamage(FinalDamage, DamageEvent, EventInstigator, DamageCauser);
 
 }

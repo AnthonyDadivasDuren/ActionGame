@@ -89,4 +89,10 @@ public:
 	UFUNCTION()
 	float CalculateReceivedDamage(float IncomingDamage, AActor* DamageCauser);
 
+	virtual float TakeDamage(float DamageAmount,
+		struct FDamageEvent const& DamageEvent,
+		class AController* EventInstigator,
+		AActor* DamageCauser) override;
+
+
 };
