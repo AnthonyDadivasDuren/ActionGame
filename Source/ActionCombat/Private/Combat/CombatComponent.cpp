@@ -51,7 +51,9 @@ void UCombatComponent::ComboAttack()
 	}
 	
 	if (!bCanAttack) { return; }
-	
+
+	// Clear any existing reset timer when attacking
+	GetWorld()->GetTimerManager().ClearTimer(ComboResetTimerHandle);
 
 	bCanAttack = false;
 	
@@ -68,11 +70,26 @@ void UCombatComponent::ComboAttack()
 		);
 	
 	OnAttackPerformedDelegate.Broadcast(StaminaCost);
+	
 }
 
 void UCombatComponent::HandleResetAttack()
 {
 	bCanAttack = true;
+
+	// Add debug message to verify the function is being called
+	//UE_LOG(LogTemp, Warning, TEXT("HandleResetAttack called"));
+
+	
+	// Start the combo reset timer when the attack animation ends
+	GetWorld()->GetTimerManager().SetTimer(
+		ComboResetTimerHandle,
+		this,
+		&UCombatComponent::ResetCombo,
+		ComboResetTime,
+		false
+	);
+
 }
 
 void UCombatComponent::RandomAttack()
@@ -97,6 +114,14 @@ void UCombatComponent::RandomAttack()
 
 	AnimDuration = CharacterRef
 		->PlayAnimMontage(AttackAnimations[RandomIndex]);
+}
+
+void UCombatComponent::ResetCombo()
+{
+	//UE_LOG(LogTemp, Warning, TEXT("ResetCombo called - Counter was: %d"), ComboCounter);
+
+	ComboCounter = 0;
+	bCanAttack = true;
 }
 
 

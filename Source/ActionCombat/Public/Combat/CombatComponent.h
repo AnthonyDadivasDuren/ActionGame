@@ -33,6 +33,11 @@ private:
 	UPROPERTY(EditAnywhere)
 	float StaminaCost{ 5.0f };
 
+	UPROPERTY(EditAnywhere)
+	float ComboResetTime{ 2.0f };
+
+	FTimerHandle ComboResetTimerHandle;
+
 
 	
 public:	
@@ -59,4 +64,7 @@ public:
 	void HandleResetAttack();
 
 	void RandomAttack();
+
+	UFUNCTION()
+	void ResetCombo();
 };
