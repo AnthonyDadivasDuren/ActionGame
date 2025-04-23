@@ -85,4 +85,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PlayHurtAnim(TSubclassOf<UCameraShakeBase> CameraShakeTemplate);
+
+	UFUNCTION()
+	float CalculateReceivedDamage(float IncomingDamage, AActor* DamageCauser);
+
 };

@@ -121,3 +121,16 @@ void AMainCharacter::PlayHurtAnim(TSubclassOf<UCameraShakeBase> CameraShakeTempl
         GetController<APlayerController>()->ClientStartCameraShake(CameraShakeTemplate);
     }
 }
+
+float AMainCharacter::CalculateReceivedDamage(float IncomingDamage, AActor* DamageCauser)
+{
+    // If blocking, reduce the damage
+    if (PlayerAnim && PlayerAnim->bIsBlocking)
+    {
+        return BlockComp->GetReducedDamage(IncomingDamage);
+    }
+    
+    // Return full damage if not blocking
+    return IncomingDamage;
+
+}

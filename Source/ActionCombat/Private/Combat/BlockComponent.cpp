@@ -37,51 +37,52 @@ void UBlockComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 bool UBlockComponent::Check(AActor* Opponent)
 {
+	if (!bIsBlocking) return true;
+    
 	ACharacter* CharacterRef{ GetOwner<ACharacter>() };
-
 	if (!CharacterRef->Implements<UMainPlayer>()) { return true; }
-
+    
 	IMainPlayer* PlayerRef{ Cast<IMainPlayer>(CharacterRef) };
+	if (!PlayerRef->HasEnoughStamina(StaminaCost)) { return true; }
 
 	FVector OpponentForward{ Opponent->GetActorForwardVector() };
 	FVector PlayerForward{ CharacterRef->GetActorForwardVector() };
+	double Result{ FVector::DotProduct(OpponentForward, PlayerForward) };
 
-	double Result{FVector::DotProduct(OpponentForward, PlayerForward) };
-
-	if (Result > 0 || !PlayerRef->HasEnoughStamina(StaminaCost))
-	{
-		return true;
-	}
+	if (Result > 0) { return true; }
 
 	CharacterRef->PlayAnimMontage(BlockAnimMontage);
-
 	OnBlockDelegate.Broadcast(StaminaCost);
-	
-	
 	return false;
+
+	
 }
+
+
 
 
 bool UBlockComponent::AttemptParry(AActor* Attacker)
 {
-	if (!bCanParry) { return false; }
-
-	// Start parry window
-	bCanParry = false;
-	GetWorld()->GetTimerManager().SetTimer(
-		ParryWindowTimerHandle,
-		this,
-		&UBlockComponent::OnParryWindowEnd,
-		ParryWindow,
-		false
-	);
-
+	if (!bIsBlocking || !bCanParry || !bInParryWindow) return false;
+    
+	float CurrentTime = GetWorld()->GetTimeSeconds();
+	float BlockDuration = CurrentTime - BlockStartTime;
+    
+	// Only allow parry within the initial window
+	if (BlockDuration > ParryWindow)
+	{
+		return false;
+	}
+    
 	return true;
+
+
 }
 
 void UBlockComponent::OnParryWindowEnd()
 {
-	bCanParry = true;
+	bInParryWindow = false;
+
 }
 
 void UBlockComponent::OnSuccessfulParry(AActor* ParriedActor)
@@ -90,8 +91,44 @@ void UBlockComponent::OnSuccessfulParry(AActor* ParriedActor)
 	ABossCharacter* Boss = Cast<ABossCharacter>(ParriedActor);
 	if (!Boss) return;
 
-	// Stun the boss
 	Boss->StunCharacter(ParryStunDuration);
+
+}
+
+
+
+float UBlockComponent::GetReducedDamage(float IncomingDamage) const
+{
+	return IncomingDamage * BlockDamageReduction;
+
+}
+
+void UBlockComponent::StartBlocking()
+{
+	if (!bIsBlocking)
+	{
+		BlockStartTime = GetWorld()->GetTimeSeconds();
+		bCanParry = true;
+		bInParryWindow = true;
+		bIsBlocking = true;
+        
+		// Set timer to end parry window
+		GetWorld()->GetTimerManager().SetTimer(
+			ParryWindowTimerHandle,
+			this,
+			&UBlockComponent::OnParryWindowEnd,
+			ParryWindow,
+			false
+		);
+	}
+
+}
+
+void UBlockComponent::StopBlocking()
+{
+	bIsBlocking = false;
+	bInParryWindow = false;
+	bCanParry = true;
 }
 
 
