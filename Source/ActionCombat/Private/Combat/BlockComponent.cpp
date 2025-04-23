@@ -37,27 +37,42 @@ void UBlockComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 bool UBlockComponent::Check(AActor* Opponent)
 {
+	bBlockFailed = false;  // Reset at start of check
+
+	
 	if (!bIsBlocking) return true;
     
 	ACharacter* CharacterRef{ GetOwner<ACharacter>() };
 	if (!CharacterRef->Implements<UMainPlayer>()) { return true; }
     
 	IMainPlayer* PlayerRef{ Cast<IMainPlayer>(CharacterRef) };
-	if (!PlayerRef->HasEnoughStamina(StaminaCost)) { return true; }
+	if (!PlayerRef->HasEnoughStamina(StaminaCost))
+	{
+		bBlockFailed = true;  // Failed due to stamina
+		return true;
+	}
 
 	FVector OpponentForward{ Opponent->GetActorForwardVector() };
 	FVector PlayerForward{ CharacterRef->GetActorForwardVector() };
 	double Result{ FVector::DotProduct(OpponentForward, PlayerForward) };
 
 	// Allow blocking in a wider angle (less than 0.5 means roughly 120 degree arc)
-	if (Result > 0.5f) { return true; }  
+	if (Result > 0.5f)
+	{
+		bBlockFailed = true;  // Failed due to wrong angle
+		return true;
+	}  
 
-
+	// Play block animation and consume stamina
 	CharacterRef->PlayAnimMontage(BlockAnimMontage);
 	OnBlockDelegate.Broadcast(StaminaCost);
+
+	// Since block was successful, make sure bIsBlocking is true
+	// This ensures the TraceComponent will show the block effect
+	bIsBlocking = true;
+    
 	return false;
 
-	
 }
 
 
@@ -75,8 +90,10 @@ bool UBlockComponent::AttemptParry(AActor* Attacker)
 	{
 		return false;
 	}
-    
+	bIsParrying = true;
+	bCanParry = false;
 	return true;
+
 
 
 }
@@ -84,6 +101,9 @@ bool UBlockComponent::AttemptParry(AActor* Attacker)
 void UBlockComponent::OnParryWindowEnd()
 {
 	bInParryWindow = false;
+	bIsParrying = false;
+	bCanParry = true;
+
 
 }
 

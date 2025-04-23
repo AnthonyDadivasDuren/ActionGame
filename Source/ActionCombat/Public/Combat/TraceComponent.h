@@ -8,6 +8,15 @@
 #include "TraceComponent.generated.h"
 
 
+UENUM(BlueprintType)
+enum class EHitEffectType : uint8
+{
+	Normal  UMETA(DisplayName = "Normal Hit"),
+	Block   UMETA(DisplayName = "Block"),
+	Parry   UMETA(DisplayName = "Parry")
+};
+
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONCOMBAT_API UTraceComponent : public UActorComponent
 {
@@ -32,6 +41,17 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* HitParticleTemplate;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* BlockParticleTemplate;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ParryParticleTemplate;
+
+
+	// Helper function to spawn appropriate hit effect
+	void SpawnHitEffect(const FVector& Location, EHitEffectType HitType);
+
 	
 public:	
 	// Sets default values for this component's properties

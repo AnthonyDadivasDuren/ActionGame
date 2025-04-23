@@ -102,6 +102,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StunCharacter(float Duration);
 
+	virtual bool IsBlocking() const override;
+	virtual bool IsParrying() const override;
 
 	void CheckPlayerPosition();
 	void PerformRearAttack();

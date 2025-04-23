@@ -284,5 +284,15 @@ void ABossCharacter::StunCharacter(float Duration)
 
 }
 
+bool ABossCharacter::IsBlocking() const
+{
+	return false; // Or implement your boss blocking logic
+}
+
+bool ABossCharacter::IsParrying() const
+{
+	return false; // Or implement your boss parrying logic
+}
+
 
 

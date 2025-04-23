@@ -27,6 +27,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* HurtAnimMontage;
+
+
+	
+
 public:
 	// Sets default values for this character's properties
 	AMainCharacter();
@@ -94,5 +98,7 @@ public:
 		class AController* EventInstigator,
 		AActor* DamageCauser) override;
 
-
+	virtual bool IsBlocking() const override;
+	virtual bool IsParrying() const override;
+	virtual bool IsBlockFailed() const override;
 };

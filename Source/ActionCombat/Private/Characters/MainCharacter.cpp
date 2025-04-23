@@ -125,6 +125,8 @@ void AMainCharacter::PlayHurtAnim(TSubclassOf<UCameraShakeBase> CameraShakeTempl
 
 float AMainCharacter::CalculateReceivedDamage(float IncomingDamage, AActor* DamageCauser)
 {
+    
+    
     // If blocking and block check returns false (successful block)
     if (PlayerAnim && PlayerAnim->bIsBlocking)
     {
@@ -154,4 +156,27 @@ float AMainCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
     // Apply the final damage through the parent class
     return Super::TakeDamage(FinalDamage, DamageEvent, EventInstigator, DamageCauser);
 
+}
+
+bool AMainCharacter::IsBlocking() const
+{
+    if (!BlockComp || !PlayerAnim) return false;
+    
+    return BlockComp->IsBlocking() && PlayerAnim->bIsBlocking;
+
+}
+
+
+bool AMainCharacter::IsParrying() const
+{
+    if (BlockComp)
+    {
+        return BlockComp->IsParrying();
+    }
+    return false;
+}
+
+bool AMainCharacter::IsBlockFailed() const
+{
+    return BlockComp ? BlockComp->IsBlockFailed() : false;
 }

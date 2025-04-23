@@ -31,4 +31,8 @@ public:
 	virtual float GetMeleeRange() { return 0.0f; }
 
 	virtual bool CanTakeDamage(AActor* Opponent) { return true; }
+
+	virtual bool IsBlocking() const = 0;
+	virtual bool IsParrying() const = 0;
+	virtual bool IsBlockFailed() const { return false; }
 };

@@ -43,7 +43,14 @@ private:
 
 	bool bCanParry{ true };
 	bool bInParryWindow{ false };
+
+	UPROPERTY(VisibleAnywhere)
 	bool bIsBlocking { false };
+    
+	UPROPERTY(VisibleAnywhere)
+	bool bIsParrying { false };
+	
+	bool bBlockFailed { false };
 
 	FTimerHandle ParryWindowTimerHandle;
 
@@ -55,6 +62,10 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnBlockSignature OnBlockDelegate;
+
+	bool IsBlocking() const { return bIsBlocking; }
+	bool IsParrying() const { return bIsParrying; }
+    bool IsBlockFailed() const { return bBlockFailed; }
 	
 protected:
 	// Called when the game starts
@@ -88,8 +99,11 @@ public:
 
 	
 private:
+    
 	
 	UFUNCTION()
 	void OnParryWindowEnd();
+
+	
 		
 };
