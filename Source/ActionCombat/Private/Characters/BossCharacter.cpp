@@ -139,6 +139,8 @@ float ABossCharacter::GetDamage()
 void ABossCharacter::Attack()
 {
 	CombatComp->RandomAttack();
+
+
 }
 // Returns the duration of the current attack animation
 float ABossCharacter::GetAnimDuration()
@@ -214,6 +216,7 @@ bool ABossCharacter::IsPlayerBehind() const
     return Angle > BehindAngleThreshold;
 }
 
+
 void ABossCharacter::PerformRearAttack()
 {
 	// Executes a random rear attack (tail swipe, turn, or jump)
@@ -254,3 +257,6 @@ void ABossCharacter::PerformRearAttack()
         //     break;
     }
 }
+
+
+

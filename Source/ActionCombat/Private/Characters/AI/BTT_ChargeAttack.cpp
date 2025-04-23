@@ -128,7 +128,7 @@ void UBTT_ChargeAttack::HandleMoveCompleted()
 		AttackTimerHandle,
 		this,
 		&UBTT_ChargeAttack::FinishAttackTask,
-		1.0f,
+		PostChargePauseTime,
 		false
 	);
 

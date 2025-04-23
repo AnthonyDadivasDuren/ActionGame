@@ -35,6 +35,11 @@ private:
     UPROPERTY(EditAnywhere)
     float ChargeWalkSpeed { 2000.0f };
 
+    // Add the pause time property
+    UPROPERTY(EditAnywhere)
+    float PostChargePauseTime { 2.0f };
+
+
     bool bIsFinished { false }; 
 
 protected:

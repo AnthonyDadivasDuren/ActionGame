@@ -48,7 +48,6 @@ private:
     
 	FTimerHandle RearAttackTimerHandle;
 
-
 public:
 	// Sets default values for this character's properties
 	ABossCharacter();
@@ -58,6 +57,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UCombatComponent* CombatComp;
+
+
 
 
 protected:

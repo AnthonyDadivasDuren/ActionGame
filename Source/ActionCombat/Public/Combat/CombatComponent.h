@@ -32,6 +32,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float StaminaCost{ 5.0f };
+
+
+	
 public:	
 	// Sets default values for this component's properties
 	UCombatComponent();
@@ -40,8 +43,6 @@ public:
 	FOnAttackPerformedSignature OnAttackPerformedDelegate;
 	
 	float AnimDuration;
-
-
 
 protected:
 	// Called when the game starts
