@@ -113,9 +113,25 @@ void UBlockComponent::OnSuccessfulParry(AActor* ParriedActor)
 	ABossCharacter* Boss = Cast<ABossCharacter>(ParriedActor);
 	if (!Boss) return;
 
+	// Apply stun to the boss
 	Boss->StunCharacter(ParryStunDuration);
-
+    
+	// Reset parry state
+	bIsParrying = false;
+	bInParryWindow = false;
+    
+	// Allow another parry after a delay
+	GetWorld()->GetTimerManager().SetTimer(
+		ParryWindowTimerHandle,
+		[this]()
+		{
+			bCanParry = true;
+		},
+		ParryStunDuration,
+		false
+	);
 }
+
 
 
 

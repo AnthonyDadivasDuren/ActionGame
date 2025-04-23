@@ -266,23 +266,37 @@ void ABossCharacter::PerformRearAttack()
 
 void ABossCharacter::StunCharacter(float Duration)
 {
-		bIsStunned = true;
+	bIsStunned = true;
     
-	// Play stun animation if you have one
-	 PlayAnimMontage(StunAnimMontage);
-    
-	// Set timer to end stun
-	GetWorld()->GetTimerManager().SetTimer(
-		StunTimerHandle,
-		[this]()
-		{
-			bIsStunned = false;
-		},
-		Duration,
-		false
-	);
-
+	// Play stun animation
+	if (StunAnimMontage)
+	{
+		PlayAnimMontage(StunAnimMontage);
+        
+		// Set timer to end stun
+		GetWorld()->GetTimerManager().SetTimer(
+			StunTimerHandle,
+			[this]()
+			{
+				bIsStunned = false;
+				// Stop the stun animation immediately
+				StopAnimMontage(StunAnimMontage);
+				// Reset combat state
+				if (BlackboardComp)
+				{
+					BlackboardComp->SetValueAsEnum(
+						TEXT("CurrentState"),
+						static_cast<uint8>(EEnemyState::Range)
+					);
+				}
+			},
+			Duration,
+			false
+		);
+	}
 }
+
+
 
 bool ABossCharacter::IsBlocking() const
 {
