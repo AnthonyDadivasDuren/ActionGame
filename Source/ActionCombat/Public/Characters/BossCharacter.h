@@ -45,8 +45,15 @@ private:
 	bool bIsTurning = false;
 	FRotator TargetRotation;
 
+	bool bIsStunned = false;
+
     
 	FTimerHandle RearAttackTimerHandle;
+	FTimerHandle StunTimerHandle;
+	UPROPERTY(EditAnywhere)
+
+	UAnimMontage* StunAnimMontage;
+
 
 public:
 	// Sets default values for this character's properties
@@ -91,6 +98,10 @@ public:
 
 	UFUNCTION()
 	void FinishDeathAnim();
+	
+	UFUNCTION(BlueprintCallable)
+	void StunCharacter(float Duration);
+
 
 	void CheckPlayerPosition();
 	void PerformRearAttack();

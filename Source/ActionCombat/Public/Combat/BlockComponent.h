@@ -24,8 +24,17 @@ private:
 	float StaminaCost{ 10.0f };
 
 	UPROPERTY(EditAnywhere)
+	float ParryWindow = 0.2f; // Time window in seconds for successful parry
+
+	UPROPERTY(EditAnywhere)
+	float ParryStunDuration = 2.0f; // How long the boss stays stunned after parry
+	
+	UPROPERTY(EditAnywhere)
 	UAnimMontage* BlockAnimMontage;
 
+	bool bCanParry{ true };
+
+	FTimerHandle ParryWindowTimerHandle;
 public:	
 	// Sets default values for this component's properties
 	UBlockComponent();
@@ -40,7 +49,16 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	
 	bool Check(AActor* Opponent);
+
+
+	void OnParryWindowEnd();
+
+	// Returns true if parry was successful
+	bool AttemptParry(AActor* Attacker);
+
+	// Called when successfully parrying an attack
+	void OnSuccessfulParry(AActor* ParriedActor);
 		
 };

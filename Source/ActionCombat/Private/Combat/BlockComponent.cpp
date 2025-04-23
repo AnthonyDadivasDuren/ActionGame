@@ -4,6 +4,7 @@
 #include "Combat/BlockComponent.h"
 #include "GameFramework/Character.h"
 #include "interfaces/MainPlayer.h"
+#include "Characters/BossCharacter.h"
 
 // Sets default values for this component's properties
 UBlockComponent::UBlockComponent()
@@ -59,4 +60,39 @@ bool UBlockComponent::Check(AActor* Opponent)
 	
 	return false;
 }
+
+
+bool UBlockComponent::AttemptParry(AActor* Attacker)
+{
+	if (!bCanParry) { return false; }
+
+	// Start parry window
+	bCanParry = false;
+	GetWorld()->GetTimerManager().SetTimer(
+		ParryWindowTimerHandle,
+		this,
+		&UBlockComponent::OnParryWindowEnd,
+		ParryWindow,
+		false
+	);
+
+	return true;
+}
+
+void UBlockComponent::OnParryWindowEnd()
+{
+	bCanParry = true;
+}
+
+void UBlockComponent::OnSuccessfulParry(AActor* ParriedActor)
+{
+	// Cast to boss character
+	ABossCharacter* Boss = Cast<ABossCharacter>(ParriedActor);
+	if (!Boss) return;
+
+	// Stun the boss
+	Boss->StunCharacter(ParryStunDuration);
+}
+
+
 

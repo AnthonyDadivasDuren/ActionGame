@@ -97,6 +97,13 @@ bool AMainCharacter::CanTakeDamage(AActor* Opponent)
     // If blocking, check if the block is successful against this opponent
     if (PlayerAnim->bIsBlocking)
     {
+        // Check for parry first
+        if (BlockComp->AttemptParry(Opponent))
+        {
+            BlockComp->OnSuccessfulParry(Opponent);
+            return false;
+        }
+        
         return BlockComp->Check(Opponent);
     }
     

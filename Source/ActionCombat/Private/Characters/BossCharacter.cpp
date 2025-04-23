@@ -138,9 +138,12 @@ float ABossCharacter::GetDamage()
 // Executes a random melee attack
 void ABossCharacter::Attack()
 {
+
+	if (bIsStunned) return;
+
+	
 	CombatComp->RandomAttack();
-
-
+	
 }
 // Returns the duration of the current attack animation
 float ABossCharacter::GetAnimDuration()
@@ -199,6 +202,8 @@ void ABossCharacter::FinishDeathAnim()
 	Destroy();
 }
 
+
+
 // Determines if the player is behind the boss based on angle
 bool ABossCharacter::IsPlayerBehind() const
 {
@@ -256,6 +261,27 @@ void ABossCharacter::PerformRearAttack()
         //     }
         //     break;
     }
+}
+
+
+void ABossCharacter::StunCharacter(float Duration)
+{
+		bIsStunned = true;
+    
+	// Play stun animation if you have one
+	 PlayAnimMontage(StunAnimMontage);
+    
+	// Set timer to end stun
+	GetWorld()->GetTimerManager().SetTimer(
+		StunTimerHandle,
+		[this]()
+		{
+			bIsStunned = false;
+		},
+		Duration,
+		false
+	);
+
 }
 
 
